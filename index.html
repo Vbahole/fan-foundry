@@ -105,7 +105,9 @@
                     statusDiv.innerText = "";
                     resultsDiv.innerHTML = `<p style="color:red;">GPS Error: Please enable location services.</p>`;
                 }, {
-                    enableHighAccuracy: true // Forces the phone's GPS hardware to kick in for tight tolerances
+                    enableHighAccuracy: true, // Uses GPS hardware instead of just WiFi/Cell towers
+                    timeout: 10000,           // Give up after 10 seconds if no lock
+                    maximumAge: 0             // Force the phone to get a NEW reading, no cache
                 });
             } else {
                 statusDiv.innerText = "";
