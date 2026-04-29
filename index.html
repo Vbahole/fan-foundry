@@ -69,6 +69,7 @@
                     const lon = position.coords.longitude;
                     
                     statusDiv.innerText = `Scanning database for ${lat.toFixed(4)}, ${lon.toFixed(4)}...`;
+                    statusDiv.innerText = `GPS Found: ${lat.toFixed(6)}, ${lon.toFixed(6)} (Searching...)`;
                     
                     try {
                         const response = await fetch(`${API_URL}?lat=${lat}&lon=${lon}`);
