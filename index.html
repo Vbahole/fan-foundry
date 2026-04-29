@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coal Door Ground Truth</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            padding: 20px; 
+            max-width: 500px; 
+            margin: auto; 
+            background-color: #f4f4f9;
+        }
+        button { 
+            padding: 15px; 
+            font-size: 18px; 
+            font-weight: bold;
+            width: 100%; 
+            background: #2c3e50; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:active { background: #1a252f; }
+        .result-card { 
+            background: white;
+            border: 1px solid #ddd; 
+            padding: 15px; 
+            margin-top: 20px; 
+            border-radius: 8px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        h3 { margin-top: 0; color: #e74c3c; }
+        p { margin: 5px 0; color: #333; }
+        img { 
+            max-width: 100%; 
+            height: auto; 
+            border-radius: 4px; 
+            margin-top: 15px; 
+            border: 1px solid #eee;
+        }
+        #status { margin-top: 15px; font-weight: bold; text-align: center; color: #555; }
+    </style>
+</head>
+<body>
+
+    <h2>Fan District Scanner</h2>
+    <button id="scanBtn">Scan My Location</button>
+    <div id="status"></div>
+    <div id="results"></div>
+
+    <script>
+        // Your live AWS API Gateway URL
+        const API_URL = "https://maz1bm5zc6.execute-api.us-east-1.amazonaws.com/default/CoalDoorSpatialCheck";
+
+        document.getElementById('scanBtn').addEventListener('click', () => {
+            const statusDiv = document.getElementById('status');
+            const resultsDiv = document.getElementById('results');
+            
+            statusDiv.innerText = "Acquiring GPS coordinates...";
+            resultsDiv.innerHTML = "";
+
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(async (position) => {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+                    
+                    statusDiv.innerText = `Scanning database for ${lat.toFixed(4)}, ${lon.toFixed(4)}...`;
+                    
+                    try {
+                        const response = await fetch(`${API_URL}?lat=${lat}&lon=${lon}`);
+                        const data = await response.json();
+                        
+                        statusDiv.innerText = ""; // Clear status on success
+
+                        if (data.matches && data.matches.length > 0) {
+                            let htmlContent = "";
+                            
+                            // Loop through all 3 matches and build the UI cards
+                            data.matches.forEach((match, index) => {
+                                htmlContent += `
+                                    <div class="result-card">
+                                        <h3>Rank ${index + 1}: ${match.distance.toFixed(1)} feet away</h3>
+                                        <p><strong>Foundry:</strong> ${match.manufacturer}</p>
+                                        <p><strong>Kobo ID:</strong> ${match.id}</p>
+                                        <img src="data:image/jpeg;base64,${match.image_base64}" alt="Coal Door Photo">
+                                    </div>
+                                `;
+                            });
+                            
+                            // Inject all 3 cards into the screen
+                            resultsDiv.innerHTML = htmlContent;
+                        } else {
+                            resultsDiv.innerHTML = "<p>No historical doors found near this location.</p>";
+                        }
+                    } catch (error) {
+                        statusDiv.innerText = "";
+                        resultsDiv.innerHTML = `<p style="color:red;">API Error: ${error.message}</p>`;
+                    }
+                }, (error) => {
+                    statusDiv.innerText = "";
+                    resultsDiv.innerHTML = `<p style="color:red;">GPS Error: Please enable location services.</p>`;
+                }, {
+                    enableHighAccuracy: true // Forces the phone's GPS hardware to kick in for tight tolerances
+                });
+            } else {
+                statusDiv.innerText = "";
+                resultsDiv.innerHTML = "<p style='color:red;'>Geolocation is not supported by your browser.</p>";
+            }
+        });
+    </script>
+</body>
+</html>
