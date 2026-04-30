@@ -152,7 +152,7 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         .logo-frame img {
-            width: 200%; /* Slicing the 2x3 grid into stacks */
+            width: 200%; 
             height: 300%;
             object-fit: none;
         }
@@ -200,7 +200,7 @@
             if (currentDoors.length === 0) return;
 
             let topMatch = currentDoors[selectedIndex];
-            let mapLink = `https://www.google.com/maps?q=${topMatch.lat},${topMatch.lon}`;
+            let mapLink = `https://www.google.com/maps/search/?api=1&query=${topMatch.lat},${topMatch.lon}`;
             
             let htmlContent = `
                 <div class="hero-card">
