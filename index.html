@@ -136,7 +136,7 @@
         .mini-card h4 { margin: 0 0 4px 0; font-size: 1.1em; color: var(--primary); }
         .mini-card .distance { color: var(--accent); font-weight: bold; font-size: 0.9em; margin: 0; }
 
-        /* Branding Gallery: CSS Sprite Slicing */
+        /* Branding Gallery: Background Sprite Slicing */
         .branding-gallery {
             margin-top: 50px;
             padding-top: 20px;
@@ -144,17 +144,14 @@
         }
         .logo-frame {
             width: 100%;
-            aspect-ratio: 16 / 9;
-            overflow: hidden;
+            aspect-ratio: 4 / 3; /* Perfect ratio for the individual grid squares */
             margin-bottom: 20px;
             border-radius: 12px;
-            background: white;
+            background-color: white;
+            background-image: url('branding.png'); /* Updated to PNG */
+            background-size: 300% 200%; /* Slices into 3 columns, 2 rows */
+            background-repeat: no-repeat;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .logo-frame img {
-            width: 200%; 
-            height: 300%;
-            object-fit: none;
         }
     </style>
 </head>
