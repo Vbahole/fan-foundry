@@ -3,46 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coal Door Ground Truth</title>
+    <title>Fan Foundry Ground Truth</title>
     <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #e74c3c;
+            --bg: #f4f4f9;
+        }
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            padding: 20px; 
-            max-width: 500px; 
-            margin: auto; 
-            background-color: #f4f4f9;
-        }
-        button { 
             padding: 15px; 
+            max-width: 600px; 
+            margin: auto; 
+            background-color: var(--bg);
+        }
+        h2 { text-align: center; color: var(--primary); }
+        button { 
+            padding: 16px; 
             font-size: 18px; 
             font-weight: bold;
             width: 100%; 
-            background: #2c3e50; 
+            background: var(--primary); 
             color: white; 
             border: none; 
-            border-radius: 8px; 
+            border-radius: 10px; 
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
         }
-        button:active { background: #1a252f; }
-        .result-card { 
+        button:active { background: #1a252f; transform: translateY(2px); }
+        #status { text-align: center; font-weight: bold; color: #666; margin-bottom: 15px; }
+
+        /* Rank 1: The Hero Card */
+        .hero-card {
             background: white;
-            border: 1px solid #ddd; 
-            padding: 15px; 
-            margin-top: 20px; 
-            border-radius: 8px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 3px solid var(--primary);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            position: relative;
         }
-        h3 { margin-top: 0; color: #e74c3c; }
-        p { margin: 5px 0; color: #333; }
-        img { 
-            max-width: 100%; 
-            height: auto; 
-            border-radius: 4px; 
-            margin-top: 15px; 
+        .hero-badge {
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .hero-card h3 { 
+            margin: 15px 0 5px 0; 
+            font-size: 2em; 
+            color: var(--primary);
+            line-height: 1.1;
+        }
+        .hero-card .distance {
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 1.3em;
+            margin-bottom: 10px;
+        }
+        .hero-card .stats {
+            font-size: 0.95em;
+            color: #444;
+            background: #f8f9fa;
+            padding: 12px;
+            border-left: 4px solid var(--primary);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        .hero-card img {
+            width: 100%;
+            border-radius: 8px;
+            object-fit: cover;
+            max-height: 350px;
+            border: 1px solid #ddd;
+        }
+
+        /* Map Button Utilities */
+        .map-btn {
+            display: inline-block;
+            background: #e8f4f8;
+            color: #2980b9;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+            border: 1px solid #bce0ee;
+            transition: background 0.2s;
+        }
+        .map-btn:hover { background: #d0eaf5; }
+
+        /* Ranks 2 & 3: The Mini Cards */
+        .mini-cards-title {
+            color: var(--primary);
+            font-size: 1.2em;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .mini-cards-container {
+            display: flex;
+            gap: 12px;
+            flex-direction: column;
+        }
+        .mini-card {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            padding: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            text-decoration: none;
+            color: inherit;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid #ddd;
+        }
+        .mini-card:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        }
+        .mini-card img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-right: 15px;
             border: 1px solid #eee;
         }
-        #status { margin-top: 15px; font-weight: bold; text-align: center; color: #555; }
+        .mini-card-info { flex-grow: 1; }
+        .mini-card h4 { margin: 0 0 4px 0; font-size: 1.2em; color: var(--primary); }
+        .mini-card .distance { color: var(--accent); font-weight: bold; font-size: 0.9em; margin: 0; }
+        .mini-card .click-hint { font-size: 0.8em; color: #888; margin-top: 4px; }
     </style>
 </head>
 <body>
@@ -53,8 +152,24 @@
     <div id="results"></div>
 
     <script>
-        // Your live AWS API Gateway URL
         const API_URL = "https://maz1bm5zc6.execute-api.us-east-1.amazonaws.com/default/CoalDoorSpatialCheck";
+
+        // Localized Knowledge Base
+        const foundryStats = {
+            "Asa Snyder": "Founded by Asa Snyder, a highly prominent Richmond architectural iron works operating out of the late 19th century.",
+            "Cruickshank": "Cruickshanks Iron Works Co. was a staple of Richmond's industrial era, known for durable residential cast iron and historic storefronts.",
+            "Davis Bros": "A prolific local foundry that supplied many of the standard coal doors and grates found throughout historic Richmond neighborhoods.",
+            "James W. Carr": "James W. Carr operated in Richmond, contributing distinct geometric patterns and robust castings to local ironwork.",
+            "Richmond Iron Works": "One of the major regional suppliers, responsible for heavy-duty street and residential casting throughout the city.",
+            "Ross": "A historic foundry whose pieces are still occasionally found preserved in the Fan District.",
+            "Joseph Hall": "An early Richmond foundry known for robust and distinctively stamped ironwork.",
+            "Unknown": "Historical records for this specific casting are currently unidentified in the database."
+        };
+
+        const getStats = (name) => {
+            const matchKey = Object.keys(foundryStats).find(key => name.includes(key));
+            return matchKey ? foundryStats[matchKey] : "A historic foundry active during Richmond's primary residential development.";
+        };
 
         document.getElementById('scanBtn').addEventListener('click', () => {
             const statusDiv = document.getElementById('status');
@@ -68,31 +183,52 @@
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
                     
-                    statusDiv.innerText = `Scanning database for ${lat.toFixed(4)}, ${lon.toFixed(4)}...`;
-                    statusDiv.innerText = `GPS Found: ${lat.toFixed(6)}, ${lon.toFixed(6)} (Searching...)`;
+                    statusDiv.innerText = `GPS Fixed: ${lat.toFixed(6)}, ${lon.toFixed(6)}. Searching...`;
                     
                     try {
                         const response = await fetch(`${API_URL}?lat=${lat}&lon=${lon}`);
                         const data = await response.json();
                         
-                        statusDiv.innerText = ""; // Clear status on success
+                        statusDiv.innerText = ""; 
 
                         if (data.matches && data.matches.length > 0) {
-                            let htmlContent = "";
+                            let topMatch = data.matches[0];
+                            let mapLink = `https://www.google.com/maps/search/?api=1&query=${topMatch.lat},${topMatch.lon}`;
                             
-                            // Loop through all 3 matches and build the UI cards
-                            data.matches.forEach((match, index) => {
-                                htmlContent += `
-                                    <div class="result-card">
-                                        <h3>Rank ${index + 1}: ${match.distance.toFixed(1)} feet away</h3>
-                                        <p><strong>Foundry:</strong> ${match.manufacturer}</p>
-                                        <p><strong>Kobo ID:</strong> ${match.id}</p>
-                                        <img src="data:image/jpeg;base64,${match.image_base64}" alt="Coal Door Photo">
-                                    </div>
-                                `;
-                            });
+                            // Build the Hero Card (Rank 1)
+                            let htmlContent = `
+                                <div class="hero-card">
+                                    <div class="hero-badge">Closest Match</div>
+                                    <h3>${topMatch.manufacturer}</h3>
+                                    <div class="distance">${topMatch.distance.toFixed(1)} feet away</div>
+                                    <a href="${mapLink}" target="_blank" class="map-btn">📍 View Exact Location on Map</a>
+                                    <div class="stats">${getStats(topMatch.manufacturer)}</div>
+                                    <img src="data:image/jpeg;base64,${topMatch.image_base64}" alt="Coal Door Photo">
+                                </div>
+                            `;
+
+                            // Build the Mini Cards (Ranks 2 & 3)
+                            if (data.matches.length > 1) {
+                                htmlContent += `<div class="mini-cards-title">Nearby Alternatives</div><div class="mini-cards-container">`;
+                                
+                                for (let i = 1; i < data.matches.length; i++) {
+                                    let match = data.matches[i];
+                                    let miniMapLink = `https://www.google.com/maps/search/?api=1&query=${match.lat},${match.lon}`;
+                                    
+                                    htmlContent += `
+                                        <a href="${miniMapLink}" target="_blank" class="mini-card">
+                                            <img src="data:image/jpeg;base64,${match.image_base64}" alt="Coal Door Photo">
+                                            <div class="mini-card-info">
+                                                <h4>${match.manufacturer}</h4>
+                                                <div class="distance">${match.distance.toFixed(1)} feet away</div>
+                                                <div class="click-hint">📍 Tap to open in Maps</div>
+                                            </div>
+                                        </a>
+                                    `;
+                                }
+                                htmlContent += `</div>`;
+                            }
                             
-                            // Inject all 3 cards into the screen
                             resultsDiv.innerHTML = htmlContent;
                         } else {
                             resultsDiv.innerHTML = "<p>No historical doors found near this location.</p>";
@@ -103,15 +239,15 @@
                     }
                 }, (error) => {
                     statusDiv.innerText = "";
-                    resultsDiv.innerHTML = `<p style="color:red;">GPS Error: Please enable location services.</p>`;
+                    resultsDiv.innerHTML = `<p style="color:red;">GPS Error: ${error.message}</p>`;
                 }, {
-                    enableHighAccuracy: true, // Uses GPS hardware instead of just WiFi/Cell towers
-                    timeout: 10000,           // Give up after 10 seconds if no lock
-                    maximumAge: 0             // Force the phone to get a NEW reading, no cache
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
                 });
             } else {
                 statusDiv.innerText = "";
-                resultsDiv.innerHTML = "<p style='color:red;'>Geolocation is not supported by your browser.</p>";
+                resultsDiv.innerHTML = "<p style='color:red;'>Geolocation not supported.</p>";
             }
         });
     </script>
