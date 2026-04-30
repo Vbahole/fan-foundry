@@ -136,29 +136,25 @@
         .mini-card h4 { margin: 0 0 4px 0; font-size: 1.1em; color: var(--primary); }
         .mini-card .distance { color: var(--accent); font-weight: bold; font-size: 0.9em; margin: 0; }
 
-        /* Branding Gallery: Absolute Transform Slicing */
+        /* Branding Gallery: Final Standalone Logos */
         .branding-gallery {
             margin-top: 50px;
             padding-top: 20px;
             border-top: 1px dashed #ccc;
         }
-        .logo-window {
-            width: 100%;
-            aspect-ratio: 1.2 / 1; /* Creates a slightly wide square frame */
-            overflow: hidden;
-            margin-bottom: 20px;
-            border-radius: 12px;
-            background: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            position: relative;
+        .final-logos-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            align-items: center;
+            margin-top: 15px;
         }
-        .logo-window img {
-            width: 300%; /* Forces the image to be exactly 3 columns wide */
-            height: 200%; /* Forces the image to be exactly 2 rows tall */
-            position: absolute;
-            top: 0;
-            left: 0;
-            max-width: none; /* Overrides mobile browser defaults */
+        .final-logos-container img {
+            width: 100%;
+            max-width: 350px; /* Keeps them from getting too massive on desktop */
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            border: 1px solid #eaeaea;
         }
     </style>
 </head>
@@ -172,24 +168,9 @@
     <div class="branding-gallery">
         <div class="section-title">Project Branding</div>
         
-        <div class="logo-window">
-            <img src="branding.png" style="transform: translate(0%, 0%);" alt="Logo 1">
-        </div>
-        <div class="logo-window">
-            <img src="branding.png" style="transform: translate(-33.33%, 0%);" alt="Logo 2">
-        </div>
-        <div class="logo-window">
-            <img src="branding.png" style="transform: translate(-66.66%, 0%);" alt="Logo 3">
-        </div>
-        
-        <div class="logo-window">
-            <img src="branding.png" style="transform: translate(0%, -50%);" alt="Slogan 1">
-        </div>
-        <div class="logo-window">
-            <img src="branding.png" style="transform: translate(-33.33%, -50%);" alt="Slogan 2">
-        </div>
-        <div class="logo-window">
-            <img src="branding.png" style="transform: translate(-66.66%, -50%);" alt="Slogan 3">
+        <div class="final-logos-container">
+            <img src="chute-finder.png" alt="Fan Chute Finder Shield Logo">
+            <img src="fan-foundry.png" alt="Fan Foundry Bronze Plaque Logo">
         </div>
     </div>
 
