@@ -136,22 +136,29 @@
         .mini-card h4 { margin: 0 0 4px 0; font-size: 1.1em; color: var(--primary); }
         .mini-card .distance { color: var(--accent); font-weight: bold; font-size: 0.9em; margin: 0; }
 
-        /* Branding Gallery: Background Sprite Slicing */
+        /* Branding Gallery: Absolute Transform Slicing */
         .branding-gallery {
             margin-top: 50px;
             padding-top: 20px;
             border-top: 1px dashed #ccc;
         }
-        .logo-frame {
+        .logo-window {
             width: 100%;
-            aspect-ratio: 4 / 3; /* Perfect ratio for the individual grid squares */
+            aspect-ratio: 1.2 / 1; /* Creates a slightly wide square frame */
+            overflow: hidden;
             margin-bottom: 20px;
             border-radius: 12px;
-            background-color: white;
-            background-image: url('branding.png'); /* Updated to PNG */
-            background-size: 300% 200%; /* Slices into 3 columns, 2 rows */
-            background-repeat: no-repeat;
+            background: white;
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .logo-window img {
+            width: 300%; /* Forces the image to be exactly 3 columns wide */
+            height: 200%; /* Forces the image to be exactly 2 rows tall */
+            position: absolute;
+            top: 0;
+            left: 0;
+            max-width: none; /* Overrides mobile browser defaults */
         }
     </style>
 </head>
