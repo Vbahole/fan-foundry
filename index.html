@@ -165,6 +165,35 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.15);
             border: 1px solid #eaeaea;
         }
+
+        /* Fullscreen Image Modal */
+        #imageModal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            cursor: zoom-out;
+        }
+        #imageModal img {
+            max-width: 95%;
+            max-height: 85%;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            object-fit: contain;
+        }
+        .modal-hint {
+            color: #ccc;
+            margin-top: 15px;
+            font-size: 0.9em;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -181,6 +210,10 @@
             <img src="chute-finder.png" alt="Fan Chute Finder Shield Logo">
             <img src="fan-foundry.png" alt="Fan Foundry Bronze Plaque Logo">
         </div>
+    </div>
+    <div id="imageModal" onclick="this.style.display='none'">
+        <img id="modalImage" src="" alt="Full Size Door">
+        <div class="modal-hint">Tap anywhere to close</div>
     </div>
 
     <script>
@@ -246,7 +279,7 @@
                     <div class="distance">${topMatch.distance.toFixed(1)} feet away</div>
                     <a href="${mapLink}" target="_blank" class="map-btn">📍 View Exact Location on Map</a>
                     <div class="stats">${getStats(topMatch.manufacturer)}</div>
-                    <img src="data:image/jpeg;base64,${topMatch.image_base64}" alt="Coal Door Photo">
+                    <img src="data:image/jpeg;base64,${topMatch.image_base64}" alt="Coal Door Photo" onclick="openLightbox(this.src)" style="cursor: zoom-in;">
                 </div>
             `;
 
@@ -257,7 +290,7 @@
                     let match = currentDoors[i];
                     htmlContent += `
                         <div class="mini-card" onclick="renderAppUI(${i})">
-                            <img src="data:image/jpeg;base64,${match.image_base64}" alt="Coal Door Photo">
+                            <img src="data:image/jpeg;base64,${topMatch.image_base64}" alt="Coal Door Photo" onclick="openLightbox(this.src)" style="cursor: zoom-in;">
                             <div class="mini-card-info">
                                 <h4>Manufacturer: ${match.manufacturer}</h4>
                                 <div class="distance">${match.distance.toFixed(1)} feet away</div>
@@ -310,6 +343,10 @@
                 resultsDiv.innerHTML = "<p style='color:red;'>Geolocation not supported.</p>";
             }
         });
+        window.openLightbox = function(imgSrc) {
+            document.getElementById('modalImage').src = imgSrc;
+            document.getElementById('imageModal').style.display = 'flex';
+        };
     </script>
 </body>
 </html>
