@@ -268,7 +268,7 @@
                     <div class="distance">${topMatch.distance.toFixed(1)} feet away</div>
                     <a href="${mapLink}" target="_blank" class="map-btn">📍 View Exact Location on Map</a>
                     <div class="stats">${getStats(topMatch.manufacturer || 'Unknown')}</div>
-                    <img src="data:image/jpeg;base64,${topMatch.image_base64}" alt="Coal Door Photo" ="openLightbox(this.src)" style="cursor: zoom-in;">
+                    <img src="data:image/jpeg;base64,${topMatch.image_base64}" alt="Coal Door Photo" onclick="openLightbox('${topMatch.full_res_url}')" style="cursor: zoom-in;">
                 </div>
             `;
 
