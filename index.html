@@ -77,6 +77,15 @@
             margin-bottom: 15px;
             line-height: 1.4;
         }
+        .stat-link {
+            display: inline-block;
+            margin-top: 8px;
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+        .stat-link:hover { text-decoration: underline; }
         .hero-card img {
             width: 100%;
             border-radius: 8px;
@@ -178,20 +187,49 @@
         const API_URL = "https://maz1bm5zc6.execute-api.us-east-1.amazonaws.com/default/CoalDoorSpatialCheck";
         let currentDoors = [];
 
+        // Upgraded Localized Knowledge Base
         const foundryStats = {
-            "Asa Snyder": "Founded by Asa Snyder, a highly prominent Richmond architectural iron works operating out of the late 19th century.",
-            "Cruickshank": "Cruickshanks Iron Works Co. was a staple of Richmond's industrial era, known for durable residential cast iron and historic storefronts.",
-            "Davis Bros": "A prolific local foundry that supplied many of the standard coal doors and grates found throughout historic Richmond neighborhoods.",
-            "James W. Carr": "James W. Carr operated in Richmond, contributing distinct geometric patterns and robust castings to local ironwork.",
-            "Richmond Iron Works": "One of the major regional suppliers, responsible for heavy-duty street and residential casting throughout the city.",
-            "Ross": "A historic foundry whose pieces are still occasionally found preserved in the Fan District.",
-            "Joseph Hall": "An early Richmond foundry known for robust and distinctively stamped ironwork.",
-            "Unknown": "Historical records for this specific casting are currently unidentified in the database."
+            "Asa Snyder": {
+                text: "Founded by Asa Snyder, a highly prominent Richmond architectural iron works operating out of the late 19th century.",
+                url: "https://example.com/asa-snyder"
+            },
+            "Cruickshank": {
+                text: "Cruickshanks Iron Works Co. was a staple of Richmond's industrial era, known for durable residential cast iron and historic storefronts.",
+                url: "https://example.com/cruickshanks"
+            },
+            "Davis Bros": {
+                text: "A prolific local foundry that supplied many of the standard coal doors and grates found throughout historic Richmond neighborhoods.",
+                url: "https://example.com/davis-bros"
+            },
+            "James W. Carr": {
+                text: "James W. Carr operated in Richmond, contributing distinct geometric patterns and robust castings to local ironwork.",
+                url: "https://example.com/james-carr"
+            },
+            "Richmond Iron Works": {
+                text: "One of the major regional suppliers, responsible for heavy-duty street and residential casting throughout the city.",
+                url: "https://example.com/richmond-iron"
+            },
+            "Ross": {
+                text: "A historic foundry whose pieces are still occasionally found preserved in the Fan District.",
+                url: "https://example.com/ross"
+            },
+            "Joseph Hall": {
+                text: "An early Richmond foundry known for robust and distinctively stamped ironwork.",
+                url: "https://example.com/joseph-hall"
+            },
+            "Unknown": {
+                text: "Historical records for this specific casting are currently unidentified in the database.",
+                url: "https://example.com/general-history"
+            }
         };
 
         const getStats = (name) => {
             const matchKey = Object.keys(foundryStats).find(key => name.includes(key));
-            return matchKey ? foundryStats[matchKey] : "A historic foundry active during Richmond's primary residential development.";
+            if (matchKey) {
+                const data = foundryStats[matchKey];
+                return `${data.text}<br><a href="${data.url}" target="_blank" class="stat-link">Read more about ${matchKey} &rarr;</a>`;
+            }
+            return "A historic foundry active during Richmond's primary residential development.";
         };
 
         window.renderAppUI = function(selectedIndex) {
